@@ -5,7 +5,7 @@ ESP8266WebServer server(80);
 
 String readString;
 
-const String agentId = "SHA-1";
+const String agentType = "SHA-0.2.0";
  
 void setup() {
   Serial.begin(9600);
@@ -31,7 +31,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "Agent Id: " + agentId + " IP address: " + WiFi.localIP());
+  server.send(200, "text/plain", "Agent type: " + agentType  + " IP address: " + WiFi.localIP());
 }
 
 void handleApiPath() {
