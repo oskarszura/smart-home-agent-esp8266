@@ -9,7 +9,7 @@ const String agentType = "SHA-0.2.0";
  
 void setup() {
   Serial.begin(9600);
-  WiFi.begin("hawaiinet1", "POK99MNB");
+  WiFi.begin("", "");
  
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
