@@ -47,7 +47,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "Hardware: agent-type-1");
+  server.send(200, "text/plain", "Smart home agent");
 }
 
 void handleApiPath() {
