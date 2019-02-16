@@ -1,34 +1,33 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
-
-typedef struct WiFiCredentials {
-    char *ssid;
-    char *pass;
-} WiFiCredentials;
  
 ESP8266WebServer server(80);
-const char* ssid = "ESPWebServer";
-const char* password = "12345678";
-int retries = 10;
+const char* hsSsid = "ESPWebServer";
+const char* hsPass = "12345678";
+int retries = 200;
 
 String readString;
  
 void setup() {
   EEPROM.begin(512);
   Serial.begin(9600);
+
+  char* ssid;
+  char* pass;
+
+  getWiFiCredentials(&ssid, &pass); 
   
-  WiFi.begin("", "");
+  WiFi.begin(ssid, pass);
  
-  /*while (WiFi.status() != WL_CONNECTED || retries > 0) {
+  while (WiFi.status() != WL_CONNECTED && retries > 0) {
     delay(500);
     retries--;
-  }*/
+  }
 
   if (WiFi.status() != WL_CONNECTED) {
-    WiFi.mode(WIFI_AP);           //Only Access point
-    WiFi.softAP(ssid, password);  //Start HOTspot removing password will disable security
-    // IPAddress myIP = WiFi.softAPIP(); 
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(hsSsid, hsPass);
   }
  
   server.on("/", handleRootPath);   
@@ -110,14 +109,14 @@ void getWiFiCredentials(char** ssid, char** pass) {
     totalLen++;
   }
 
-  *ssid = (char*)malloc(sizeof(char) * (separatorIndex + 1));       // abc:123 (4)
-  *pass = (char*)malloc(sizeof(char) * (totalLen - separatorIndex + 1));// 0123456 tL = 7 (4
+  *ssid = (char*)malloc(sizeof(char) * (separatorIndex + 1));
+  *pass = (char*)malloc(sizeof(char) * (totalLen - separatorIndex + 1));
 
   for(int i = 0; i < separatorIndex; i++) {
     (*ssid)[i] = charBuff[i];
   }
   (*ssid)[separatorIndex] = '\0';
-  for(int i = separatorIndex + 1; i <= totalLen + 1; i++) {
+  for(int i = separatorIndex + 1; i < totalLen; i++) {
     (*pass)[i - (separatorIndex + 1)] = charBuff[i];
   }
   (*pass)[totalLen + 1] = '\0';
