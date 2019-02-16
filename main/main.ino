@@ -3,9 +3,9 @@
 #include <EEPROM.h>
  
 ESP8266WebServer server(80);
-const char* hsSsid = "ESPWebServer";
+const char* hsSsid = "SmaHotSpot";
 const char* hsPass = "12345678";
-int retries = 200;
+unsigned int retries = 200;
 
 String readString;
  
