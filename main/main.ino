@@ -3,6 +3,7 @@
 #include <EEPROM.h>
  
 ESP8266WebServer server(80);
+WiFiServer tcpServer(81);
 const char* hsSsid = "SmaHotSpot";
 const char* hsPass = "12345678";
 unsigned int retries = 200;
@@ -19,7 +20,8 @@ void setup() {
   getWiFiCredentials(&ssid, &pass); 
   
   WiFi.begin(ssid, pass);
- 
+  tcpServer.begin();
+
   while (WiFi.status() != WL_CONNECTED && retries > 0) {
     delay(500);
     retries--;
@@ -30,9 +32,10 @@ void setup() {
     WiFi.softAP(hsSsid, hsPass);
   }
  
-  server.on("/", handleRootPath);   
+  server.on("/", handleRootPath);
   server.on("/api", handleApiPath);
   server.on("/config", handleConfigPath);
+  server.on("/connect", handleIdPath);
   
   server.begin();        
 }
@@ -44,6 +47,18 @@ void loop() {
   }
  
   server.handleClient();
+
+  WiFiClient client = tcpServer.available();
+
+  if (client) {
+    while(client.connected()){      
+      while(client.available() > 0) {
+        char c = client.read();
+        Serial.write(c);
+      }
+    }
+    client.stop();
+  }
 }
 
 void handleRootPath() {
@@ -83,6 +98,10 @@ void handleConfigPath() {
     getWiFiCredentials(&ssid, &pass); 
     server.send(200, "text/plain", "[" + String(ssid) + "|" + String(pass) + "]");
   }
+}
+
+void handleIdPath() {
+  server.send(200, "text/plain", "{ " + WiFi.macAddress() + "}");
 }
 
 void getWiFiCredentials(char** ssid, char** pass) {
