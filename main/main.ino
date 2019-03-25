@@ -4,7 +4,6 @@
  
 ESP8266WebServer server(80);
 WiFiServer tcpServer(81);
-const char* ID = "";
 const char* hsSsid = "SmaHotSpot";
 const char* hsPass = "12345678";
 unsigned int retries = 200;
