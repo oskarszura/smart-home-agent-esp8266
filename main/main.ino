@@ -9,6 +9,11 @@ const char* hsPass = "12345678";
 unsigned int retries = 200;
 
 String readString;
+String tcpResponse;
+WiFiClient client;
+
+char prevToken = 0;
+char channel = '0';
  
 void setup() {
   EEPROM.begin(512);
@@ -41,28 +46,54 @@ void setup() {
 }
  
 void loop() {
-  if (Serial.available()) {
-    char c = Serial.read();  
-    readString += c;
-  }
- 
   server.handleClient();
 
-  WiFiClient client = tcpServer.available();
+  if (!client || client && !client.connected()) {
+    client = tcpServer.available();
+  }
 
-  if (client) {
-    while(client.connected()){      
-      while(client.available() > 0) {
+  if (client && client.connected()) {
+    if (client.available() > 0) {
         char c = client.read();
         Serial.write(c);
+    }
+  }
+
+  if (Serial.available()) {
+    char c = Serial.read(); 
+
+    if (c == '[') {
+      prevToken = c;
+    } 
+    else if (prevToken == '[' && c != ':') {
+      channel = c;
+    } 
+    else if (prevToken == '[' && c == ':') {
+      prevToken = c;
+    }
+    else if (prevToken == ':' && c != ']') {
+      if (channel == '1') {
+        tcpResponse += c;
+        readString += c;
+      }
+      else if (channel == '2') {
+        readString += c;
       }
     }
-    client.stop();
+    else if (c == ']') {
+      if (channel == '1') {
+        client.print(tcpResponse);
+        tcpResponse = "";
+        client.stop();
+      }
+      channel = '0';
+      prevToken = 0;
+    }
   }
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "Smart home agent");
+  server.send(200, "text/plain", "smart-evolution container v0.4.0");
 }
 
 void handleApiPath() {
