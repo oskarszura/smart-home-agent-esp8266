@@ -60,7 +60,7 @@ void loop() {
   }
 
   if (Serial.available()) {
-    char c = Serial.read(); 
+    char c = Serial.read();
 
     if (c == '[') {
       prevToken = c;
@@ -74,7 +74,6 @@ void loop() {
     else if (prevToken == ':' && c != ']') {
       if (channel == '1') {
         tcpResponse += c;
-        readString += c;
       }
       else if (channel == '2') {
         readString += c;
@@ -84,7 +83,6 @@ void loop() {
       if (channel == '1') {
         client.print(tcpResponse);
         tcpResponse = "";
-        client.stop();
       }
       channel = '0';
       prevToken = 0;
@@ -126,7 +124,7 @@ void handleConfigPath() {
   } else {
     char* ssid;
     char* pass;
-    getWiFiCredentials(&ssid, &pass); 
+    getWiFiCredentials(&ssid, &pass);
     server.send(200, "text/plain", "[" + String(ssid) + "|" + String(pass) + "]");
   }
 }
