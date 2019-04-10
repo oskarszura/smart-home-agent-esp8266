@@ -53,7 +53,7 @@ void loop() {
   }
 
   if (client && client.connected()) {
-    while (client.available() > 0) {
+    if (client.available() > 0) {
         char c = client.read();
         Serial.write(c);
     }
