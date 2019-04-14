@@ -8,6 +8,7 @@ const char* hsSsid = "SmaHotSpot";
 const char* hsPass = "12345678";
 unsigned int retries = 200;
 
+String cmdString;
 String readString;
 String tcpResponse;
 WiFiClient client;
@@ -72,7 +73,10 @@ void loop() {
       prevToken = c;
     }
     else if (prevToken == ':' && c != ']') {
-      if (channel == '1') {
+      if (channel == '0') {
+        cmdString += c;
+      }
+      else if (channel == '1') {
         tcpResponse += c;
       }
       else if (channel == '2') {
@@ -80,7 +84,14 @@ void loop() {
       }
     }
     else if (c == ']') {
-      if (channel == '1') {
+      if (channel == '0') {
+        if (cmdString == "disconnect") {
+          client.stop();
+        }
+        
+        cmdString = "";
+      }
+      else if (channel == '1') {
         client.print(tcpResponse);
         tcpResponse = "";
       }
@@ -91,7 +102,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "smart-evolution container v0.4.0");
+  server.send(200, "text/plain", "smart-evolution container v0.4.2");
 }
 
 void handleApiPath() {
