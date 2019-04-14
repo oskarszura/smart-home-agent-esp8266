@@ -86,7 +86,7 @@ void loop() {
     else if (c == ']') {
       if (channel == '0') {
         if (cmdString == "disconnect") {
-          client.close();
+          client.stop();
         }
         
         cmdString = "";
@@ -102,7 +102,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "smart-evolution container v0.4.0");
+  server.send(200, "text/plain", "smart-evolution container v0.4.2");
 }
 
 void handleApiPath() {
