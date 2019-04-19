@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
+#include "version.h"
  
 ESP8266WebServer server(80);
 WiFiServer tcpServer(81);
@@ -101,7 +102,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "smart-evolution container v0.5.0");
+  server.send(200, "text/plain", "smart-evolution container " + String(VERSION));
 }
 
 void handleApiPath() {
