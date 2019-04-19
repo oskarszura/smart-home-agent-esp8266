@@ -41,7 +41,6 @@ void setup() {
   server.on("/", handleRootPath);
   server.on("/api", handleApiPath);
   server.on("/config", handleConfigPath);
-  server.on("/connect", handleIdPath);
   
   server.begin();        
 }
@@ -102,7 +101,7 @@ void loop() {
 }
 
 void handleRootPath() {
-  server.send(200, "text/plain", "smart-evolution container v0.4.2");
+  server.send(200, "text/plain", "smart-evolution container v0.5.0");
 }
 
 void handleApiPath() {
@@ -136,12 +135,15 @@ void handleConfigPath() {
     char* ssid;
     char* pass;
     getWiFiCredentials(&ssid, &pass);
-    server.send(200, "text/plain", "[" + String(ssid) + "|" + String(pass) + "]");
-  }
-}
 
-void handleIdPath() {
-  server.send(200, "text/plain", "{ " + WiFi.macAddress() + "}");
+    String output = "Container configuration\n"
+      "ssid = [" + String(ssid) + "]\n"
+      "pass = [" + String(pass) + "]\n"
+      "mac addr = [" + WiFi.macAddress() + "]\n"
+      "ip addr = [" + WiFi.localIP() + "]\n";
+  
+    server.send(200, "text/plain", output);
+  }
 }
 
 void getWiFiCredentials(char** ssid, char** pass) {
@@ -178,6 +180,6 @@ void getWiFiCredentials(char** ssid, char** pass) {
   for(int i = separatorIndex + 1; i < totalLen; i++) {
     (*pass)[i - (separatorIndex + 1)] = charBuff[i];
   }
-  (*pass)[totalLen + 1] = '\0';
+  (*pass)[totalLen] = '\0';
 }
 
