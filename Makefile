@@ -9,6 +9,10 @@ version:
 	git tag --delete $(V)
 	git tag $(V)
 
+.PHONY: fix
+fix:
+	clang-format -i -style=file ./main/*.ino ./main/*.h
+
 .PHONY: help
 help:
 	@echo  'Available tasks:'
