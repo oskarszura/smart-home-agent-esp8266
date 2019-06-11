@@ -1,3 +1,4 @@
+#include "id.h"
 #include "version.h"
 #include <EEPROM.h>
 #include <ESP8266WebServer.h>
@@ -5,7 +6,7 @@
 
 ESP8266WebServer server(80);
 WiFiServer tcpServer(81);
-const char *hsSsid = "SmaHotSpot";
+const char *hsSsid = strcat("SH-", HARDWARE_ID);
 const char *hsPass = "12345678";
 unsigned int retries = 200;
 
