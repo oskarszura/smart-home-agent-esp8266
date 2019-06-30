@@ -3,7 +3,6 @@ version:
 	git tag $(V)
 	./scripts/changelog.sh
 	git add ./docs/changelogs/CHANGELOG_$(V).md
-	./scripts/id_generator.sh
 	./scripts/version.sh $(V)
 	git add ./main/version.h
 	git commit --allow-empty -m "Build $(V)"
@@ -13,6 +12,10 @@ version:
 .PHONY: fix
 fix:
 	clang-format -i -style=file ./main/*.ino ./main/*.h
+
+.PHONY: id
+id:
+	./scripts/id_generator.sh
 
 .PHONY: help
 help:

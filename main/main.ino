@@ -132,18 +132,18 @@ void handleConfigPath() {
     char *pass;
     getWiFiCredentials(&ssid, &pass);
 
-    String output = "Container configuration\n"
-                    "ssid = [" +
+    String output = "# Container configuration\n"
+                    "hardware_id=[" +
+                    String(HARDWARE_ID) + "]\n"
+                    "ssid=[" +
                     String(ssid) +
                     "]\n"
-                    "pass = [" +
+                    "pass=[" +
                     String(pass) +
                     "]\n"
-                    "mac addr = [" +
+                    "mac_addr=[" +
                     WiFi.macAddress() +
-                    "]\n"
-                    "ip addr = [" +
-                    WiFi.localIP() + "]\n";
+                    "]\n";
 
     server.send(200, "text/plain", output);
   }
